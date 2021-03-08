@@ -4,7 +4,7 @@ const fs = require('fs');
 const readline = require('readline');
 const axios = require('axios');
 const cheerio = require('cheerio');
-const puppeteer = require('puppeteer');
+// const puppeteer = require('puppeteer-core');
 const path = require('path');
 
 global.processing = '';
@@ -33,25 +33,25 @@ class Converter {
     });
   }
         
-  async naverVideo2() {
-    try {
-      const browser = await puppeteer.launch({ headless: false, args: ['--ignore-certificate-errors'] });
-      const page = await browser.newPage();
-      await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36")
-      await page.goto('http://www.pandora.tv/view/uzoglycsoifs/55795344#38964450_new');
+  // async naverVideo2() {
+  //   try {
+  //     const browser = await puppeteer.launch({ headless: false, args: ['--ignore-certificate-errors'] });
+  //     const page = await browser.newPage();
+  //     await page.setUserAgent("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/83.0.4103.116 Safari/537.36")
+  //     await page.goto('http://www.pandora.tv/view/uzoglycsoifs/55795344#38964450_new');
 
-      const result = await page.evaluate(() => {
-        let video = document.querySelectorAll('#qVideo');
+  //     const result = await page.evaluate(() => {
+  //       let video = document.querySelectorAll('#qVideo');
 
-        console.log(video[0].currentSrc);
-        return video[0].currentSrc
-      })
-      console.log(result);
-    }
-    catch(err) {
-      console.error(err);
-    }
-  }
+  //       console.log(video[0].currentSrc);
+  //       return video[0].currentSrc
+  //     })
+  //     console.log(result);
+  //   }
+  //   catch(err) {
+  //     console.error(err);
+  //   }
+  // }
 
   async convertMp3Naver() {
     axios.get(this.#url, { responseType: 'arraybuffer' })

@@ -17,8 +17,13 @@ const indexRouter = require('./router');
 const app = express();
 app.set('port', process.env.PORT || 3000);
 
+console.log('aaa', process.env.COOKIE_SECRET, process.env.JWT_SECRET);
 db.connect((err) => {
-  if(err) throw err;
+  if(err) {
+    console.error(err);
+    console.error(err.message);
+    throw err;
+  }
   console.log('mysql connected...');
 });
 
@@ -39,19 +44,19 @@ if(process.env.NODE_ENV === 'production') {
   app.use(hpp());
   // sessionOption.cookie.secure = true; // HTTPS 적용시 주석 풀기
 
-  (async () => {
-    try {
-      const SQL = `SELECT * FROM USERS`;
-      const [results, fields] = await db.promise().execute(SQL);
-      if(results.length) return;
-      console.log('delete table all...');
-      await deleteAll();
-    }
-    catch(err) {
-      console.error(err);
-      await createAll();
-    }
-  })();
+  // (async () => {
+  //   try {
+  //     const SQL = `SELECT * FROM USERS`;
+  //     const [results, fields] = await db.promise().execute(SQL);
+  //     if(results.length) return;
+  //     console.log('delete table all...');
+  //     await deleteAll();
+  //   }
+  //   catch(err) {
+  //     console.error(err);
+  //     await createAll();
+  //   }
+  // })();
 }
 else app.use(morgan('dev'));
 
