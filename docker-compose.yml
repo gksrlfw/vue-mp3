@@ -2,6 +2,8 @@
 
 version: "3"
 services:
+  ffmpeg:
+    image: "jrottenberg/ffmpeg"
   nginx:
     restart: always
     build:

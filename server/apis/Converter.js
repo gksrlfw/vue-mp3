@@ -1,4 +1,5 @@
 const ytdl = require('ytdl-core');
+const ffmpegPath = require('@ffmpeg-installer/ffmpeg').path;
 const ffmpeg = require('fluent-ffmpeg');
 const fs = require('fs');
 const readline = require('readline');
@@ -8,6 +9,7 @@ const cheerio = require('cheerio');
 const path = require('path');
 
 global.processing = '';
+ffmpeg.setFfmpegPath(ffmpegPath);
 
 class Converter {
   #url; #title; #artist; #metadata; #audioFile; #videoFile; #song; #count=0;
