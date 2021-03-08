@@ -22,8 +22,6 @@ class Converter {
   }
 
   // 네이버 영상 크롤링
-  // video는 attributes를 안보여주나?? img는 되는데 video는 안뎀...
-  // presentation에서 이미지를 이용해서 비디오를 렌더하고 있다는데?? 뭔말이지??
   naverVideo() {
     axios.get('https://tv.naver.com/v/1376695')
     .then(res => {
