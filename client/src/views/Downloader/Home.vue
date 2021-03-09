@@ -1,8 +1,5 @@
 <template>
   <div class="container mx-auto">
-    <div class="text-center text-3xl mb-6 font-extrabold">
-      EASY MP3 DOWNLOADER
-    </div>
     <form class="flex flex-col justify-center items-center ">
       <input
         type="text"
@@ -45,6 +42,9 @@
         placeholder="LYRICS"
         v-model="data.lyrics"
       />
+      <svg class="animate-spin h-5 w-5 mr-3 bg-gray-700" viewBox="0 0 24 24" v-if="isRunning">
+        LOADING
+      </svg>
       <div class="w-1/2 flex flex-row justify-between mb-4">
         <button
           class="bg-gray-400 py-3 px-4 rounded-md font-semibold text-gray-800 border-2 border-gray-400 hover:bg-gray-500 focus:outline-none shadow-md"
@@ -60,34 +60,35 @@
           CONVERT
         </button>
       </div>
-      <textarea
+      <!-- <textarea
         ref="result"
         class="w-1/2 h-32 text-center mb-4 rounded-lg shadow-lg text-lg font-bold p-2 border-2 focus:outline-none focus:bg-gray-100 hover:bg-gray-50"
         v-model="processing"
-      />
+      /> -->
     </form>
   </div>
 </template>
 
 <script lang="">
 import { defineComponent, ref, watch } from "vue";
-import { data, search, convert, processing } from "@/views/logic";
+import { data, search, convert, processing, isRunning } from "@/views/Downloader/logic";
 
 export default defineComponent({
   setup() {
     const result = ref("");
-    watch(
-      () => processing.value,
-      () => {
-        result.value.scrollTo(0, result.value.scrollHeight);
-      }
-    );
+    // watch(
+    //   () => processing.value,
+    //   () => {
+    //     result.value.scrollTo(0, result.value.scrollHeight);
+    //   }
+    // );
     return {
       data,
       search,
       convert,
       processing,
-      result
+      result,isRunning,
+
     };
   }
 });

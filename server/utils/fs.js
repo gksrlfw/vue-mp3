@@ -10,8 +10,8 @@ const checkDir = str => {
   else console.log('The path exists.');
 }
 
-const deleteFile = (dir, title, ext) => {
-  fs.unlinkSync(`${dir}/${title}.${ext}`, err => {
+const deleteFile = (filePath) => {
+  fs.unlinkSync(filePath, err => {
     if(err) console.error(err);
     else console.log('삭제 완료');
   });

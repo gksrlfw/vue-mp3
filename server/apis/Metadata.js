@@ -14,7 +14,7 @@ class Metadata {
     this.#genre = genre;
     this.#videoUrl = videoUrl;
     this.#audioFile = path.join(__dirname, '..', `/media/audios/${title}.mp3`);
-    this.#imageFile = path.join(__dirname, '..', `/media/images/${title}_${artist}.jpg`);
+    this.#imageFile = path.join(__dirname, '..', `/media/images/${title}.jpg`);
   }
 
 
@@ -67,7 +67,7 @@ class Metadata {
         nodeID3.write(tags, this.#audioFile)
         .then(() => {
           if(this.#title!=='' && this.#artist!=='' && this.#album!=='' && this.#lyrics!=='' && this.#genre!=='' && this.#videoUrl!=='' && this.#imageFile!=='' && this.#imageUrl!=='')
-              status = song.insertSongData(this.#title, this.#artist, this.#album, this.#lyrics, this.#genre, this.#videoUrl, this.#imageUrl, this.#imageFile);
+            status = song.insertSongData(this.#title, this.#artist, this.#album, this.#lyrics, this.#genre, this.#videoUrl, this.#imageUrl, this.#imageFile);
           return status;
         })
         .catch(err => {
@@ -77,7 +77,8 @@ class Metadata {
     })
     .catch(err => {
       console.error(err);
-    })
+      return { message: 'Metadata error' };
+    });
   }
 }
 

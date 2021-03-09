@@ -1,10 +1,9 @@
 const { Converter } = require('../apis/Converter');
 const Metadata = require('../apis/Metadata');
 const Scrapper = require('../apis/Scrapper');
-const SongService = require('../services/SongService');
-const db = require('../config/db');
+const songServiceInstance = require('../services/SongService');
 
-exports.convertNaver = async (req, res) => {
+exports.convertNaver = async (req, res, next) => {
   try {
     const { title, artist, album, lyrics, imageUrl, genre, videoUrl } = req.body;
     const converter = new Converter(videoUrl, title, new Metadata(title, artist, album, lyrics, imageUrl, genre));
@@ -13,42 +12,43 @@ exports.convertNaver = async (req, res) => {
     res.json({ audioPath: audioPath });
   }
   catch(err) {
-    console.log(err);
-    res.sendStatus(500);
+    next(err);
   }
 }
 
-exports.convertYoutube = async (req, res) => {
+exports.convertYoutube = async (req, res, next) => {
   try {
     console.log('youtube!');
     const { title, artist, album, lyrics, imageUrl, genre, videoUrl } = req.body;
     if(!title || !artist) res.send({ message: 'title or artist' });
-    const song = new SongService(db);
-    const converter = new Converter(videoUrl, title, artist, new Metadata(title, artist, album, lyrics, imageUrl, genre, videoUrl), song);
+    const converter = new Converter(videoUrl, title, artist, new Metadata(title, artist, album, lyrics, imageUrl, genre, videoUrl), songServiceInstance);
     
     // TODO: Syncro!!!! Do not send req, res
-    converter.convertMp3Youtube(req, res);      
+    converter.convertMp3Youtube(req, res);
   }
   catch(err) {
-    console.log(err);
-    res.sendStatus(500);
+    next(err);
   }
 }
 
-exports.scrap = async (req, res) => {
+exports.scrap = async (req, res, next) => {
   try {
     console.log('scrap!');
-    const { title, artist } = req.body;
-    const scrapper = new Scrapper(title, artist);
-    const result = await scrapper.scrapGoogle();
-    if(!result.url.length) {
-      console.log(result, result.url.length);
-      res.sendStatus(500);
+    const { videoUrl, title, artist } = req.body;
+    if(videoUrl) {
+      const data = await songServiceInstance.searchSongByUrl(videoUrl);
+      if(data?.TITLE) {
+        return res.send(data);
+      }
     }
-    else res.send(result);
+    // if(title && artist) {
+    //   const scrapper = new Scrapper(title, artist);
+    //   const data = await scrapper.scrapGoogle();
+    //   if(data?.V_URL?.length) return res.send(data);
+    // }
+    res.send({ message: `Can't not find any data. Check typo` });
   }
   catch(err) {
-    console.log(err);
-    res.senStatus(500);
+    next(err);
   }
 }

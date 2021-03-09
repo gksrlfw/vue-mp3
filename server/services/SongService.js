@@ -1,3 +1,4 @@
+const db = require('../config/db');
 
 class SongService {
   #db;
@@ -85,38 +86,27 @@ class SongService {
   }
 
   async searchSongByUrl(url) {
-      try {
-          console.log('searchSong...');
-          const SEARCH_SONG = 'SELECT * FROM SONG WHERE V_URL = ?';
-          const SEARCH_GENRE = 'SELECT TITLE FROM GENRE WHERE GID = ?';
-          const [results, fields] = await this.#db.promise().execute(SEARCH_SONG, [url]);
-          results[0].LYRICS = results[0].LYRICS.replace(/\n/g, "<br>");    // br
-          results[0].LYRICS = results[0].LYRICS.replace(/''/g, "'");    // ''
-          const [genre, fileds] = await this.#db.promise().execute(SEARCH_GENRE, [results[0].S_GID]);
-          results[0].S_GID = genre[0].TITLE;
-
-          return results;
+    try {
+      console.log('searchSong...');
+      const SEARCH_SONG = 'SELECT * FROM SONG WHERE V_URL = ?';
+      const SEARCH_GENRE = 'SELECT TITLE FROM GENRE WHERE GID = ?';
+      const [results, fields] = await this.#db.promise().execute(SEARCH_SONG, [url]);
+      console.log(results);
+      if(!results || !results[0]?.TITLE) {
+        return { V_URL: url };
       }
-      catch(err) {
-          console.error(err);
-      }
-  }
-  async searchSongById(sid) {
-      try {
-          console.log('searchSong...');
-          const SEARCH_SONG = 'SELECT * FROM SONG WHERE SID=?';
-          const SEARCH_GENRE = 'SELECT TITLE FROM GENRE WHERE GID=?';
-          const [results, fields] = await this.#db.promise().execute(SEARCH_SONG, [sid]);
-          results[0].LYRICS = results[0].LYRICS.replace(/\n/g, "<br>");    // br
-          results[0].LYRICS = results[0].LYRICS.replace(/''/g, "'");    // ''
-          const [genre, fileds] = await this.#db.promise().execute(SEARCH_GENRE, [results[0].S_GID]);
-          results[0].S_GID = genre[0].TITLE;
-
-          return results;
-      }
-      catch(err) {
-          console.error(err);
-      }
+      results[0].LYRICS = results[0].LYRICS.replace(/\n/g, "<br>");     // br
+      results[0].LYRICS = results[0].LYRICS.replace(/''/g, "'");        // ''
+      console.log(results);
+      const [genre, fileds] = await this.#db.promise().execute(SEARCH_GENRE, [results[0].S_GID]);
+      console.log(genre);
+      results[0].GENRE = genre[0].TITLE;
+      console.log(results[0]);
+      return results[0];
+    }
+    catch(err) {
+      console.error(err);
+    }
   }
 
   async getSongsByGenre(gid) {
@@ -137,16 +127,6 @@ class SongService {
           console.error(err);
       }
   }
-  async createGenre(genre) {
-      try {
-          const INSERT_GENRE = `INSERT INTO GENRE(TITLE) VALUES(?)`;
-          await this.#db.promise().execute(INSERT_GENRE, [genre]);
-          return 200;
-      }
-      catch(err) {
-          console.error(err);
-      }
-  }
 }
-
-module.exports = SongService; 
+const songServiceInstance = new SongService(db);
+module.exports = songServiceInstance; 

@@ -9,6 +9,7 @@ const cors = require('cors');
 const db = require('./config/db');
 const helmet = require('helmet');
 const hpp = require('hpp'); 
+const { deleteFile } = require('./utils/fs');
 
 dotenv.config();
 
@@ -43,27 +44,14 @@ if(process.env.NODE_ENV === 'production') {
   app.use(helmet({ contentSecurityPolicy: false }));
   app.use(hpp());
   // sessionOption.cookie.secure = true; // HTTPS 적용시 주석 풀기
-
-  // (async () => {
-  //   try {
-  //     const SQL = `SELECT * FROM USERS`;
-  //     const [results, fields] = await db.promise().execute(SQL);
-  //     if(results.length) return;
-  //     console.log('delete table all...');
-  //     await deleteAll();
-  //   }
-  //   catch(err) {
-  //     console.error(err);
-  //     await createAll();
-  //   }
-  // })();
 }
 else app.use(morgan('dev'));
 
 app.enable('trust proxy');
 app.use(cors());
 // 정적으로 지정된 기본 pulbic 폴더에서 client/dist에 있는 파일로 변경한다.
-app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));        
+// app.use(express.static(path.join(__dirname, '..', 'client', 'dist')));        
+app.use(express.static(path.join(__dirname, 'public/dist')));        
 app.use('/audio', express.static(path.join(__dirname, 'apis/media/audio')));  
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -73,11 +61,13 @@ app.use(session(sessionOption));
 app.use('/api', indexRouter)
 app.get('/api/download/:title', (req, res) => {
   console.log('download!', req.params.title);
-  let audioPath = path.join(__dirname, '/media/audios/', req.params.title);
-  console.log(audioPath);
+  const audioPath = path.join(__dirname, '/media/audios/', req.params.title);
+  const title = req.params.title.split('.')[0];
   res.download(audioPath, req.params.title, err => {
-      if(err) console.error(err);
-      else res.end();
+    if(err) console.error(err);
+    else res.end();
+    deleteFile(path.join(__dirname, '/media/audios/', req.params.title));
+    deleteFile(path.join(__dirname, '/media/images/', `${title}.jpg`));
   });
 });
 
@@ -85,8 +75,6 @@ app.use((req, res, next) => {
   res.status(404).send(`해당 페이지가 존재하지 않습니다!!!!`);
 });
 
-
-// 에러처리 미들웨어
 app.use((err, req, res, next) => {
   console.error(err);
   res.status(500).send(err.message);

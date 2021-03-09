@@ -1,6 +1,5 @@
 import axios from "axios";
 import { reactive, ref } from "vue";
-import { BASE_URL } from "../store/GlobalVariable";
 
 // export const data = reactive({
 //   videoUrl: "https://www.youtube.com/watch?v=voES-Cqee2A",
@@ -14,9 +13,12 @@ import { BASE_URL } from "../store/GlobalVariable";
 // });
 
 export const data = reactive({
+  // videoUrl: "https://www.youtube.com/watch?v=voES-Cqee2A",
   videoUrl: "",
   title: "",
   artist: "",
+  // title: "morning breeze",
+  // artist: "juke ross",
   album: "",
   genre: "",
   imageUrl: "",
@@ -27,21 +29,41 @@ export const processing = ref("");
 export const isRunning = ref("");
 export async function search() {
   try {
+    if(isRunning.value) return alert("Already running! Plz try it after this running");
+    isRunning.value = true;
     console.log("search...");
-    const response = await axios.get(`${BASE_URL}/main`);
-    console.log(response);
+    const response = await axios.post(`/api/convert/scrap`, data);
+    console.log(response.message);
+    if(response?.data?.message) {
+      isRunning.value = false;
+      return alert(response.data.message);
+    }
+    // data에 response.data 넣기
+    data.videoUrl = response.data.V_URL;
+    data.title = response.data.TITLE;
+    data.artist = response.data.ARTIST;
+    data.album = response.data.ALBUM;
+    data.genre = response.data.GENRE;
+    data.imageUrl = response.data.IMG_URL;
+    data.lyrics = response.data.LYRICS;
+    console.log(response, data, response.data);
+    isRunning.value = false;
   } catch (err) {
     console.error(err);
+    isRunning.value = false;
+    return alert('Error: Failed to search');
   }
 }
 
 export async function convert() {
   try {
-    if (isRunning.value) return alert("Running! Plz try it after this running");
+    if (isRunning.value) return alert("Already running! Plz try it after this running");
     console.log("convert...");
     isRunning.value = true;
     processing.value = "";
-    const es = new EventSource(`/sse`);
+
+    // ecs에 배포하면 proxy가 안먹는다... 왜지...
+    const es = new EventSource(`/sse`, { withCredentials: true });
     es.onmessage = e => {
       if (e.data === "COMPLETED!") {
         es.close();
@@ -56,11 +78,12 @@ export async function convert() {
 
     processing.value += `=== ${data.title} ===
     `;
-    const response = await axios.post(`${BASE_URL}/convert/youtube`, data);
-    window.open(`${BASE_URL}/download/${response.data.audioPath}`);
+    const response = await axios.post(`/api/convert/youtube`, data);
+    window.open(`/api/download/${response.data.audioPath}`);
     isRunning.value = false;
   } catch (err) {
     console.error(err);
     isRunning.value = false;
+    return alert('Error: Failed to convert');
   }
 }

@@ -107,6 +107,7 @@ class Converter {
       console.log('done', status);
       processing = 'COMPLETED!';
       res.send({ status, audioPath: `${this.#title}.mp3` });
+
     });
   }
 
