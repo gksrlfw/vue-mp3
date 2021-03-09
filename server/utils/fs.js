@@ -11,6 +11,7 @@ const checkDir = str => {
 }
 
 const deleteFile = (filePath) => {
+  if (!fs.existsSync(filePath)) return;
   fs.unlinkSync(filePath, err => {
     if(err) console.error(err);
     else console.log('삭제 완료');

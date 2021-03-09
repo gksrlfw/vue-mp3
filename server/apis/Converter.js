@@ -75,7 +75,7 @@ class Converter {
   convertMp3Youtube (req, res) {  
     console.log('downloadYoutube !');
     let stream = ytdl(this.#url);
-
+    console.log('stream', stream);
     this.mp4Tomp3(stream, req, res);      
   }
 
@@ -96,7 +96,7 @@ class Converter {
       console.log('Cannot process: '+err.message);
       this.#count+=1;
       console.log(this.#count);
-      if(this.#count > 20) res.sendStatus(500);
+      if(this.#count > 10) res.sendStatus(500);
       else this.convertMp3Youtube(req, res);
     })
     .on('end', async () => {

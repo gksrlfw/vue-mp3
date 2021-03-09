@@ -42,7 +42,11 @@
         placeholder="LYRICS"
         v-model="data.lyrics"
       />
-      <svg class="animate-spin h-5 w-5 mr-3 bg-gray-700" viewBox="0 0 24 24" v-if="isRunning">
+      <svg
+        class="animate-spin h-5 w-5 mr-3 bg-gray-700"
+        viewBox="0 0 24 24"
+        v-if="isRunning"
+      >
         LOADING
       </svg>
       <div class="w-1/2 flex flex-row justify-between mb-4">
@@ -71,7 +75,13 @@
 
 <script lang="">
 import { defineComponent, ref, watch } from "vue";
-import { data, search, convert, processing, isRunning } from "@/views/Downloader/logic";
+import {
+  data,
+  search,
+  convert,
+  processing,
+  isRunning
+} from "@/views/Downloader/logic";
 
 export default defineComponent({
   setup() {
@@ -87,8 +97,8 @@ export default defineComponent({
       search,
       convert,
       processing,
-      result,isRunning,
-
+      result,
+      isRunning
     };
   }
 });

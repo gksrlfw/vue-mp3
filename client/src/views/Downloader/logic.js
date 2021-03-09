@@ -29,12 +29,13 @@ export const processing = ref("");
 export const isRunning = ref("");
 export async function search() {
   try {
-    if(isRunning.value) return alert("Already running! Plz try it after this running");
+    if (isRunning.value)
+      return alert("Already running! Plz try it after this running");
     isRunning.value = true;
     console.log("search...");
     const response = await axios.post(`/api/convert/scrap`, data);
     console.log(response.message);
-    if(response?.data?.message) {
+    if (response?.data?.message) {
       isRunning.value = false;
       return alert(response.data.message);
     }
@@ -51,39 +52,41 @@ export async function search() {
   } catch (err) {
     console.error(err);
     isRunning.value = false;
-    return alert('Error: Failed to search');
+    return alert("Error: Failed to search");
   }
 }
 
 export async function convert() {
   try {
-    if (isRunning.value) return alert("Already running! Plz try it after this running");
+    if (isRunning.value)
+      return alert("Already running! Plz try it after this running");
     console.log("convert...");
     isRunning.value = true;
     processing.value = "";
 
     // ecs에 배포하면 proxy가 안먹는다... 왜지...
-    const es = new EventSource(`/sse`, { withCredentials: true });
-    es.onmessage = e => {
-      if (e.data === "COMPLETED!") {
-        es.close();
-        processing.value += `=== COMPLETED! ===
-        `;
-      } else if (!e.data) return;
-      else {
-        processing.value += `${e.data}kb downloaded!
-        `;
-      }
-    };
+    // const es = new EventSource(`/sse`, { withCredentials: true });
+    // es.onmessage = e => {
+    //   if (e.data === "COMPLETED!") {
+    //     es.close();
+    //     processing.value += `=== COMPLETED! ===
+    //     `;
+    //   } else if (!e.data) return;
+    //   else {
+    //     processing.value += `${e.data}kb downloaded!
+    //     `;
+    //   }
+    // };
 
-    processing.value += `=== ${data.title} ===
-    `;
+    // processing.value += `=== ${data.title} ===
+    // `;
     const response = await axios.post(`/api/convert/youtube`, data);
+    console.log(response);
     window.open(`/api/download/${response.data.audioPath}`);
     isRunning.value = false;
   } catch (err) {
     console.error(err);
     isRunning.value = false;
-    return alert('Error: Failed to convert');
+    return alert("Error: Failed to convert");
   }
 }

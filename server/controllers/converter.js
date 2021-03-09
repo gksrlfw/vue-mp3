@@ -20,7 +20,8 @@ exports.convertYoutube = async (req, res, next) => {
   try {
     console.log('youtube!');
     const { title, artist, album, lyrics, imageUrl, genre, videoUrl } = req.body;
-    if(!title || !artist) res.send({ message: 'title or artist' });
+    console.log(title, artist, videoUrl);
+    if(!title) res.send({ message: 'Fill out title' });
     const converter = new Converter(videoUrl, title, artist, new Metadata(title, artist, album, lyrics, imageUrl, genre, videoUrl), songServiceInstance);
     
     // TODO: Syncro!!!! Do not send req, res
