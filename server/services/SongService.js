@@ -95,7 +95,7 @@ class SongService {
       if(!results || !results[0]?.TITLE) {
         return { V_URL: url };
       }
-      results[0].LYRICS = results[0].LYRICS.replace(/\n/g, "<br>");     // br
+      // results[0].LYRICS = results[0].LYRICS.replace(/\n/g, "<br>");     // br
       results[0].LYRICS = results[0].LYRICS.replace(/''/g, "'");        // ''
       console.log(results);
       const [genre, fileds] = await this.#db.promise().execute(SEARCH_GENRE, [results[0].S_GID]);

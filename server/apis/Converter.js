@@ -74,8 +74,7 @@ class Converter {
 
   convertMp3Youtube (req, res) {  
     console.log('downloadYoutube !');
-    let stream = ytdl(this.#url);
-    console.log('stream', stream);
+    const stream = ytdl(this.#url, { quality: 'highestaudio' });
     this.mp4Tomp3(stream, req, res);      
   }
 

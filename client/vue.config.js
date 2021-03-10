@@ -1,5 +1,6 @@
 module.exports = {
   devServer: {
+    historyApiFallback: true,
     // ① api 요청이 있을때 어디에서 처리할지를 설정
     // proxy: 'http://localhost:8001/'
     proxy: {

@@ -32,9 +32,7 @@ export async function search() {
     if (isRunning.value)
       return alert("Already running! Plz try it after this running");
     isRunning.value = true;
-    console.log("search...");
     const response = await axios.post(`/api/convert/scrap`, data);
-    console.log(response.message);
     if (response?.data?.message) {
       isRunning.value = false;
       return alert(response.data.message);
@@ -47,7 +45,6 @@ export async function search() {
     data.genre = response.data.GENRE;
     data.imageUrl = response.data.IMG_URL;
     data.lyrics = response.data.LYRICS;
-    console.log(response, data, response.data);
     isRunning.value = false;
   } catch (err) {
     console.error(err);
@@ -60,7 +57,6 @@ export async function convert() {
   try {
     if (isRunning.value)
       return alert("Already running! Plz try it after this running");
-    console.log("convert...");
     isRunning.value = true;
     processing.value = "";
 
@@ -81,7 +77,6 @@ export async function convert() {
     // processing.value += `=== ${data.title} ===
     // `;
     const response = await axios.post(`/api/convert/youtube`, data);
-    console.log(response);
     window.open(`/api/download/${response.data.audioPath}`);
     isRunning.value = false;
   } catch (err) {
