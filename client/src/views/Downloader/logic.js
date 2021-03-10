@@ -77,6 +77,10 @@ export async function convert() {
     // processing.value += `=== ${data.title} ===
     // `;
     const response = await axios.post(`/api/convert/youtube`, data);
+    if(response.data.status === 500) {
+      isRunning.value = false;
+      return alert(response.data.message);
+    }
     window.open(`/api/download/${response.data.audioPath}`);
     isRunning.value = false;
   } catch (err) {

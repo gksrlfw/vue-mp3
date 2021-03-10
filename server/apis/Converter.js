@@ -75,7 +75,12 @@ class Converter {
   convertMp3Youtube (req, res) {  
     console.log('downloadYoutube !');
     const stream = ytdl(this.#url, { quality: 'highestaudio' });
-    this.mp4Tomp3(stream, req, res);      
+    stream.on('error', err => {
+      if(err) return res.send({ status: 500, message: 'CHECK YOUR URL' }); 
+    });
+    setTimeout(() => {
+      this.mp4Tomp3(stream, req, res);      
+    }, 0);
   }
 
   mp4Tomp3(stream, req ,res) {
@@ -106,7 +111,6 @@ class Converter {
       console.log('done', status);
       processing = 'COMPLETED!';
       res.send({ status, audioPath: `${this.#title}.mp3` });
-
     });
   }
 
