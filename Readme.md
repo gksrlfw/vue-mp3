@@ -1,17 +1,19 @@
-### URL
-- http://3.141.15.244/api/convert/youtube
-- http://192.168.99.100:3000/api/convert/youtube
-- http://localhost:3000/api/convert/youtube
+# MP3 Converter
 
-### ffmpeg
-- docker: docker pull jrottenberg/ffmpeg
-- path 필요
+- Convert youtube video to mp3.
+- This project doesn't have any profitable purposes. If any problem with this, please mail to gksrlfw@gmail.com
 
-### Eventsource
-- proxy 적용이 안된다... 뭐때문이지?
+### Skills
 
-### ytdl-core
-- ec2에 배포한 이후, 몇번 실행되다가 갑자기 429 에러발생.. -> 한번더 해보자..
+- vue 3.0, tailwind css, express, docker-compose, aws(ec2, rds), travis ci
+- http://mohobby.ml
 
-### route 53
-- 여기서 도메인 네임을 등록하자
+### Issue
+
+- Eventsouce could not do proxy..
+- Some issue occured when I deployed puppeteer or puppeteer-core package with docker.
+- Need to set path with @ffmpeg-installer/ffmpeg for using ec2.
+
+### References
+
+- ffmpeg docker file: docker pull jrottenberg/ffmpeg
